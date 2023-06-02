@@ -8,6 +8,14 @@ datasource db {
 }
 
 model Pet {
-  id       Int       @id @default(autoincrement())
-  name     String    @db.VarChar(255)
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(255)
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  name     String  @db.VarChar(255)
+  email    String  @unique @db.VarChar(255)
+  password String  @db.VarChar(255)
+  token    String? @db.VarChar(255)
 }
