@@ -30,7 +30,7 @@ services:
     image: adminer:latest
     restart: always
     environment:
-      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DEFAULT_SERVER: postgres
       ADMINER_DESIGN: arcs-material
     ports:
       - '8080:8080'
