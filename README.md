@@ -10,8 +10,11 @@
 ## Run locally
 
 ```bash
-# run Docker
+# Run Docker
 docker-compose up -d --build
+
+# Sync Prisma schema
+npx prisma && npx prisma generate
 
 # Push database schema
 npx prisma db push
