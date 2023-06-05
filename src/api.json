@@ -44,6 +44,11 @@
     "/pet": {
       "post": {
         "tags": ["pet"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "summary": "Add a new pet to the store",
         "description": "Add a new pet to the store",
         "operationId": "addPet",
@@ -80,6 +85,11 @@
       },
       "get": {
         "tags": ["pet"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "summary": "Get all pet from the store",
         "description": "Get all pet from the store",
         "operationId": "getAllPets",
@@ -109,6 +119,11 @@
     "/pet/{petId}": {
       "get": {
         "tags": ["pet"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "summary": "Find pet by ID",
         "description": "Returns a single pet",
         "operationId": "getPetById",
@@ -145,6 +160,11 @@
       },
       "delete": {
         "tags": ["pet"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "summary": "Deletes a pet",
         "description": "Deletes a pet",
         "operationId": "deletePet",
@@ -174,6 +194,11 @@
       },
       "patch": {
         "tags": ["pet"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "summary": "Update a pet",
         "description": "Update a pet",
         "operationId": "updatePet",
@@ -275,6 +300,38 @@
           }
         }
       }
+    },
+    "/signup": {
+      "post": {
+        "tags": ["user"],
+        "summary": "Create user",
+        "description": "Create user account.",
+        "operationId": "createUser",
+        "requestBody": {
+          "description": "Created user object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "examples": {
+                "user1": {
+                  "value": "user1"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid username/password supplied"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -313,6 +370,13 @@
             "type": "string"
           }
         }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }
