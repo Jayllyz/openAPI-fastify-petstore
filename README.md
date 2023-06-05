@@ -4,6 +4,7 @@
 - TypeScript
 - Fastify
 - openAPI 3
+- Prisma
 - PostgreSQL
 - Docker
 
