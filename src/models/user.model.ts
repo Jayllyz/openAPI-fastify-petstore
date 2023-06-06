@@ -3,8 +3,12 @@ import { prisma } from '../db.server';
 export type { User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { Server } from 'http';
+import { type } from 'os';
 
 export async function generateToken(id: User['id']) {
+  if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET not set');
+  if (!id) throw new Error('id not set');
   const token = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1h' });
   return token;
 }
@@ -14,7 +18,13 @@ export async function dbUserById(id: User['id']) {
 }
 
 export async function verifyToken(token: User['token']) {
-  const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+  if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET not set');
+  if (!token) return null;
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  if (typeof decoded === 'string') {
+    return null;
+  }
+
   const user = await dbUserById(decoded.id);
   if (!user || !user.token) {
     return null;

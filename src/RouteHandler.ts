@@ -1,7 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { dbAllPet, dbPetById, dbDeletePet, dbAddPet, dbUpdatePet } from './models/pet.model';
 import { dbCreateUser, dbLoginUser, dbSetToken, generateToken, verifyToken, revokeToken } from './models/user.model';
-import { get } from 'http';
 
 class RouteHandler {
   addPet = async (req: FastifyRequest, reply: FastifyReply) => {
