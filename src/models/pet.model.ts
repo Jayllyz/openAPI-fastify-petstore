@@ -1,4 +1,4 @@
-import type { Pet } from '@prisma/client';
+import type { Pet, User } from '@prisma/client';
 import { prisma } from '../db.server';
 export type { Pet } from '@prisma/client';
 
@@ -10,8 +10,13 @@ export async function dbAllPet() {
   return prisma.pet.findMany();
 }
 
-export async function dbAddPet(pet: Pet) {
-  return prisma.pet.create({ data: pet });
+export async function dbAddPet(pet: Pet, owner: User['id']) {
+  return prisma.pet.create({
+    data: {
+      ...pet,
+      owner: owner,
+    },
+  });
 }
 
 export async function dbDeletePet(id: Pet['id']) {

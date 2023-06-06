@@ -16,9 +16,11 @@ export async function dbUserById(id: User['id']) {
 export async function verifyToken(token: User['token']) {
   const decoded = await jwt.verify(token, process.env.JWT_SECRET);
   const user = await dbUserById(decoded.id);
-  if (!user) {
+  if (!user || !user.token) {
     throw new Error('Invalid token');
   }
+
+  return user.id;
 }
 
 export async function dbCreateUser(name: User['name'], email: User['email'], password: User['password']) {
