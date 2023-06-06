@@ -15,6 +15,9 @@ class RouteHandler {
     }
 
     const body: any = req.body;
+    if (!body.name) {
+      return reply.status(400).send({ status: false, error: 'Missing name' });
+    }
     await dbAddPet(body, id);
 
     return reply.status(201).send({ status: true, message: 'Pet added' });

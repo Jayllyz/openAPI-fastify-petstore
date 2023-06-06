@@ -62,7 +62,6 @@
               "examples": {
                 "post-labrador": {
                   "value": {
-                    "id": 3,
                     "name": "Golden Retriever"
                   }
                 }
