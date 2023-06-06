@@ -98,6 +98,12 @@ class RouteHandler {
   createUser = async (req: FastifyRequest, reply: FastifyReply) => {
     const { name, email, password }: any = req.body;
 
+    const user = await dbLoginUser(email, password);
+
+    if (user) {
+      return reply.status(409).send({ status: false, error: 'User already exists' });
+    }
+
     if (!name || !email || !password) {
       return reply.status(400).send({ status: false, error: 'Missing fields' });
     }

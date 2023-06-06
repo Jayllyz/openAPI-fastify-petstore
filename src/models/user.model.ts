@@ -3,8 +3,6 @@ import { prisma } from '../db.server';
 export type { User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { Server } from 'http';
-import { type } from 'os';
 
 export async function generateToken(id: User['id']) {
   if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET not set');
@@ -34,7 +32,10 @@ export async function verifyToken(token: User['token']) {
 }
 
 export async function dbCreateUser(name: User['name'], email: User['email'], password: User['password']) {
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const salt = process.env.SALT;
+  if (!salt) throw new Error('SALT not set');
+
+  const hashedPassword = await bcrypt.hash(password, parseInt(salt));
   const token = null;
   return prisma.user.create({
     data: {
