@@ -17,7 +17,7 @@ export async function verifyToken(token: User['token']) {
   const decoded = await jwt.verify(token, process.env.JWT_SECRET);
   const user = await dbUserById(decoded.id);
   if (!user || !user.token) {
-    throw new Error('Invalid token');
+    return null;
   }
 
   return user.id;
@@ -41,11 +41,10 @@ export async function dbLoginUser(email: User['email'], password: User['password
   if (user) {
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
-      throw new Error('Invalid credentials !');
+      return null;
     }
     return user;
   }
-
   return null;
 }
 
