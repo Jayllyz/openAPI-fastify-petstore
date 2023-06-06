@@ -30,14 +30,6 @@
         "description": "Find out more",
         "url": "http://swagger.io"
       }
-    },
-    {
-      "name": "store",
-      "description": "Access to Petstore orders",
-      "externalDocs": {
-        "description": "Find out more about our store",
-        "url": "http://swagger.io"
-      }
     }
   ],
   "paths": {
@@ -89,8 +81,8 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Get all pet from the store",
-        "description": "Get all pet from the store",
+        "summary": "Get all pets from the store",
+        "description": "Get all pets from the store",
         "operationId": "getAllPets",
         "responses": {
           "200": {
@@ -164,8 +156,8 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Deletes a pet",
-        "description": "Deletes a pet",
+        "summary": "Delete a pet",
+        "description": "Delete a pet",
         "operationId": "deletePet",
         "parameters": [
           {
@@ -248,8 +240,8 @@
     "/login": {
       "post": {
         "tags": ["user"],
-        "summary": "Logs user into the system",
-        "description": "",
+        "summary": "Log user and return token",
+        "description": "Log user and return token",
         "operationId": "loginUser",
         "requestBody": {
           "description": "Email & password for login",
@@ -322,6 +314,7 @@
     "/logout": {
       "post": {
         "tags": ["user"],
+        "summary": "Revoke JWT token",
         "description": "Revoke JWT",
         "operationId": "logoutUser",
         "security": [

@@ -23,3 +23,7 @@ npx prisma db push
 # Run server
 npm run dev
 ```
+
+## API Documentation
+
+- http://localhost:3000/doc
