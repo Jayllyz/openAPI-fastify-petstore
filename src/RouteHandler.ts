@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { dbAllPet, dbPetById, dbDeletePet, dbAddPet, dbUpdatePet } from './models/pet.model';
 import { dbCreateUser, dbLoginUser, dbSetToken, generateToken, verifyToken, revokeToken } from './models/user.model';
+import { get } from 'http';
 
 class RouteHandler {
   addPet = async (req: FastifyRequest, reply: FastifyReply) => {
@@ -63,6 +64,11 @@ class RouteHandler {
     }
 
     const params: any = req.params;
+    const pet = await dbPetById(params.petId);
+    if (!pet) {
+      return reply.status(404).send({ status: false, error: 'Pet not found' });
+    }
+
     await dbDeletePet(params.petId);
     return reply.status(200).send('delete ok');
   };
@@ -78,6 +84,11 @@ class RouteHandler {
     }
 
     const body: any = req.body;
+    const pet = await dbPetById(body.id);
+    if (!pet) {
+      return reply.status(404).send({ status: false, error: 'Pet not found' });
+    }
+
     await dbUpdatePet(body);
     return reply.status(200).send('update ok');
   };
@@ -109,8 +120,8 @@ class RouteHandler {
     if (!token) {
       return reply.status(500).send({ error: 'Internal server error' });
     }
-    await dbSetToken(user.id, token);
 
+    await dbSetToken(user.id, token);
     return reply.status(200).send(token);
   };
 
@@ -125,7 +136,6 @@ class RouteHandler {
     }
 
     await revokeToken(id);
-
     return reply.status(200).send({ status: true, message: 'Logout successful' });
   };
 }
