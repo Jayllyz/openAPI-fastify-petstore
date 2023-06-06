@@ -332,6 +332,26 @@
           }
         }
       }
+    },
+    "/logout": {
+      "post": {
+        "tags": ["user"],
+        "description": "Revoke JWT",
+        "operationId": "logoutUser",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid token"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -346,6 +366,10 @@
           },
           "name": {
             "type": "string"
+          },
+          "owner": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       },

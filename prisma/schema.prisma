@@ -8,8 +8,10 @@ datasource db {
 }
 
 model Pet {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(255)
+  id    Int    @id @default(autoincrement())
+  name  String @db.VarChar(255)
+  owner Int
+  user  User   @relation(fields: [owner], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model User {
@@ -18,4 +20,5 @@ model User {
   email    String  @unique @db.VarChar(255)
   password String  @db.VarChar(255)
   token    String? @db.VarChar(255)
+  Pet      Pet[]
 }

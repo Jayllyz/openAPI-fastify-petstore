@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { dbAllPet, dbPetById, dbDeletePet, dbAddPet, dbUpdatePet } from './models/pet.model';
-import { dbCreateUser, dbLoginUser, dbSetToken, generateToken, verifyToken } from './models/user.model';
+import { dbCreateUser, dbLoginUser, dbSetToken, generateToken, verifyToken, revokeToken } from './models/user.model';
 
 class RouteHandler {
   addPet = async (req: FastifyRequest, reply: FastifyReply) => {
@@ -8,10 +8,11 @@ class RouteHandler {
     if (!token) {
       throw new Error('Missing token');
     }
-    await verifyToken(token);
+    const id = await verifyToken(token);
 
     const body: any = req.body;
-    await dbAddPet(body);
+    await dbAddPet(body, id);
+
     return reply.send('created ok');
   };
 
@@ -90,6 +91,17 @@ class RouteHandler {
     await dbSetToken(user.id, token);
 
     return reply.send(token);
+  };
+
+  logoutUser = async (req: FastifyRequest, reply: FastifyReply) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      throw new Error('Missing token');
+    }
+    const id = await verifyToken(token);
+    await revokeToken(id);
+
+    return reply.send('JWT revoked!');
   };
 }
 
