@@ -33,12 +33,11 @@ const fastifySwaggerOptions: FastifyStaticSwaggerOptions = {
 server.register(swagger, fastifySwaggerOptions);
 server.register(swaggerUi, fastifySwaggerUiOptions);
 
-
 server.addHook('onSend', async (request, reply, payload: any) => {
   if (!request.url.includes('/doc')) {
     const responseTime = reply.getResponseTime();
     const body = JSON.parse(payload);
-    body.responseTime = Number(responseTime.toFixed(2)) + "ms";
+    body.responseTime = Number(responseTime.toFixed(2)) + 'ms';
     return JSON.stringify(body);
   }
 });
@@ -48,11 +47,9 @@ server.addHook('onError', async (request, reply, error) => {
     message: error.message,
     statusCode: error.code,
     status: false,
-    responseTime: Number(reply.getResponseTime().toFixed(2)) + "ms"
+    responseTime: Number(reply.getResponseTime().toFixed(2)) + 'ms',
   });
-
 });
-
 
 try {
   server.listen({ port: 3000, host: '0.0.0.0' }, function (err, address) {

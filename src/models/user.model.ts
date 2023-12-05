@@ -20,12 +20,10 @@ export async function verifyToken(token: string) {
   if (!process.env.JWT_SECRET) throw new Exception(500, 'JWT_SECRET not set');
   tokenExist(token);
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  if (typeof decoded === 'string') 
-    throw new Exception(401, 'Invalid token');
+  if (typeof decoded === 'string') throw new Exception(401, 'Invalid token');
 
   const user = await dbUserById(decoded.id);
-  if (!user || !user.token) 
-    throw new Exception(401, 'Invalid token');
+  if (!user || !user.token) throw new Exception(401, 'Invalid token');
 
   return user.id;
 }
@@ -54,8 +52,7 @@ export async function dbLoginUser(email: User['email'], password: User['password
   const user = await prisma.user.findUniqueOrThrow({ where: { email } });
   if (user) {
     const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword)
-      throw new Exception(401, 'Invalid credentials');
+    if (!validPassword) throw new Exception(401, 'Invalid credentials');
     return user;
   }
   throw new Exception(401, 'Invalid credentials');

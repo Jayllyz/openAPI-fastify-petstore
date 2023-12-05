@@ -9,8 +9,7 @@ class RouteHandler {
     const id = await verifyToken(token!);
 
     const body: any = req.body;
-    if (!body.name)
-      throw new Exception(400, 'Missing name');
+    if (!body.name) throw new Exception(400, 'Missing name');
 
     await dbAddPet(body, id);
 
@@ -41,8 +40,7 @@ class RouteHandler {
 
     const params: any = req.params as { petId: number };
     const pet = await dbPetById(params.petId);
-    if (!pet)
-      throw new Exception(404, 'Pet not found');
+    if (!pet) throw new Exception(404, 'Pet not found');
 
     await dbDeletePet(params.petId);
     return reply.status(200).send('delete ok');
@@ -54,8 +52,7 @@ class RouteHandler {
 
     const body = req.body as Pet;
     const pet = await dbPetById(body.id);
-    if (!pet)
-      throw new Exception(404, 'Pet not found');
+    if (!pet) throw new Exception(404, 'Pet not found');
 
     await dbUpdatePet(body);
     return reply.status(200).send('update ok');
@@ -64,8 +61,7 @@ class RouteHandler {
   createUser = async (req: FastifyRequest, reply: FastifyReply) => {
     const { name, email, password } = req.body as { name: string; email: string; password: string };
 
-    if (!name || !email || !password)
-      throw new Exception(400, 'Missing fields');
+    if (!name || !email || !password) throw new Exception(400, 'Missing fields');
 
     await dbLoginUser(email, password);
 
@@ -76,8 +72,7 @@ class RouteHandler {
   loginUser = async (req: FastifyRequest, reply: FastifyReply) => {
     const { email, password }: any = req.body;
 
-    if (!email || !password)
-      throw new Exception(400, 'Missing fields');
+    if (!email || !password) throw new Exception(400, 'Missing fields');
 
     const user = await dbLoginUser(email, password);
 
