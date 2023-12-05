@@ -26,4 +26,4 @@ npm run dev
 
 ## API Documentation
 
-- http://localhost:3000/doc
+- <http://localhost:3000/doc>
