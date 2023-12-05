@@ -3,66 +3,76 @@ import { prisma } from '../db.server';
 export type { User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { tokenExist, Exception } from '../utils';
 
 export async function generateToken(id: User['id']) {
-  if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET not set');
-  if (!id) throw new Error('id not set');
+  if (!process.env.JWT_SECRET) throw new Exception(500, 'JWT_SECRET not set');
+  if (!id) throw new Exception(500, 'Missing id');
   const token = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1h' });
   return token;
 }
 
 export async function dbUserById(id: User['id']) {
-  return prisma.user.findUnique({ where: { id } });
+  return prisma.user.findUniqueOrThrow({ where: { id } });
 }
 
-export async function verifyToken(token: User['token']) {
-  if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET not set');
-  if (!token) return null;
+export async function verifyToken(token: string) {
+  if (!process.env.JWT_SECRET) throw new Exception(500, 'JWT_SECRET not set');
+  tokenExist(token);
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  if (typeof decoded === 'string') {
-    return null;
-  }
+  if (typeof decoded === 'string') 
+    throw new Exception(401, 'Invalid token');
 
   const user = await dbUserById(decoded.id);
-  if (!user || !user.token) {
-    return null;
-  }
+  if (!user || !user.token) 
+    throw new Exception(401, 'Invalid token');
 
   return user.id;
 }
 
 export async function dbCreateUser(name: User['name'], email: User['email'], password: User['password']) {
   const salt = process.env.SALT;
-  if (!salt) throw new Error('SALT not set');
+  if (!salt) throw new Exception(500, 'SALT not set');
 
   const hashedPassword = await bcrypt.hash(password, parseInt(salt));
   const token = null;
-  return prisma.user.create({
-    data: {
-      name,
-      email,
-      password: hashedPassword,
-      token,
-    },
-  });
+  try {
+    return await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        token,
+      },
+    });
+  } catch (error: any) {
+    throw new Exception(500, error.message);
+  }
 }
 
 export async function dbLoginUser(email: User['email'], password: User['password']) {
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findUniqueOrThrow({ where: { email } });
   if (user) {
     const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword) {
-      return null;
-    }
+    if (!validPassword)
+      throw new Exception(401, 'Invalid credentials');
     return user;
   }
-  return null;
+  throw new Exception(401, 'Invalid credentials');
 }
 
 export async function revokeToken(id: User['id']) {
-  return prisma.user.update({ where: { id }, data: { token: null } });
+  try {
+    return await prisma.user.update({ where: { id }, data: { token: null } });
+  } catch (error: any) {
+    throw new Exception(500, error.message);
+  }
 }
 
 export async function dbSetToken(id: User['id'], token: User['token']) {
-  return prisma.user.update({ where: { id }, data: { token } });
+  try {
+    return await prisma.user.update({ where: { id }, data: { token } });
+  } catch (error: any) {
+    throw new Exception(500, error.message);
+  }
 }
