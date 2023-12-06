@@ -1,4 +1,4 @@
-import { FastifyRequest } from "fastify";
+import { FastifyRequest } from 'fastify';
 
 export class Exception extends Error {
   code: number; // it is defined into Error
@@ -19,4 +19,3 @@ export function getToken(req: FastifyRequest): string {
   tokenExist(token);
   return token!;
 }
-
