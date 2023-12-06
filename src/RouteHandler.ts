@@ -1,14 +1,14 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { dbAllPet, dbPetById, dbDeletePet, dbAddPet, dbUpdatePet, Pet } from './models/pet.model';
 import { dbCreateUser, dbLoginUser, dbSetToken, generateToken, verifyToken, revokeToken } from './models/user.model';
-import { Exception, tokenExist } from './utils';
+import { Exception, tokenExist, getToken } from './utils';
 
 class RouteHandler {
   addPet = async (req: FastifyRequest, reply: FastifyReply) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    const id = await verifyToken(token!);
+    const token = getToken(req);
+    const id = await verifyToken(token);
 
-    const body: any = req.body;
+    const body = req.body as Pet;
     if (!body.name) throw new Exception(400, 'Missing name');
 
     await dbAddPet(body, id);
@@ -17,8 +17,8 @@ class RouteHandler {
   };
 
   getPetById = async (req: FastifyRequest, reply: FastifyReply) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    await verifyToken(token!);
+    const token = getToken(req);
+    await verifyToken(token);
 
     const params = req.params as { petId: number };
     const pet = await dbPetById(params.petId);
@@ -27,18 +27,18 @@ class RouteHandler {
   };
 
   getAllPets = async (req: FastifyRequest, reply: FastifyReply) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    await verifyToken(token!);
+    const token = getToken(req);
+    await verifyToken(token);
 
     const pets = await dbAllPet();
     return reply.status(200).send(pets);
   };
 
   deletePet = async (req: FastifyRequest, reply: FastifyReply) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    await verifyToken(token!);
+    const token = getToken(req);
+    await verifyToken(token);
 
-    const params: any = req.params as { petId: number };
+    const params = req.params as { petId: number };
     const pet = await dbPetById(params.petId);
     if (!pet) throw new Exception(404, 'Pet not found');
 
@@ -47,8 +47,8 @@ class RouteHandler {
   };
 
   updatePet = async (req: FastifyRequest, reply: FastifyReply) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    await verifyToken(token!);
+    const token = getToken(req);
+    await verifyToken(token);
 
     const body = req.body as Pet;
     const pet = await dbPetById(body.id);
@@ -70,7 +70,7 @@ class RouteHandler {
   };
 
   loginUser = async (req: FastifyRequest, reply: FastifyReply) => {
-    const { email, password }: any = req.body;
+    const { email, password } = req.body as { email: string; password: string };
 
     if (!email || !password) throw new Exception(400, 'Missing fields');
 
@@ -84,8 +84,8 @@ class RouteHandler {
   };
 
   logoutUser = async (req: FastifyRequest, reply: FastifyReply) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    const id = await verifyToken(token!);
+    const token = getToken(req);
+    const id = await verifyToken(token);
 
     await revokeToken(id);
     return reply.status(200).send({ status: true, message: 'Logout successful' });
