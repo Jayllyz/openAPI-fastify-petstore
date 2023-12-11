@@ -1,0 +1,24 @@
+version: '3'
+
+tasks:
+  docker:
+    cmds:
+      - docker-compose up -d --build
+      
+  install:
+    cmds:
+      - npm install
+  
+  build:
+    cmds:
+      - npm run build
+
+  prisma:
+    cmds:
+      - npx prisma && npx prisma generate && npx prisma db push
+      
+  start:
+    preconditions:
+      - prisma
+    cmds:
+      - npm run dev

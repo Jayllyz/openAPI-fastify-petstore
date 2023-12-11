@@ -10,18 +10,21 @@
 
 ## Run locally
 
+To run these commands you need to install :
+[task](https://taskfile.dev/#/installation)
+
 ```bash
-# Run Docker
-docker-compose up -d --build
+# Start docker
+task docker
 
-# Sync Prisma schema
-npx prisma && npx prisma generate
+# Install dependencies
+task install
 
-# Push database schema
-npx prisma db push
+# Init database
+task prisma
 
-# Run server
-npm run dev
+# Start server
+task dev
 ```
 
 ## API Documentation
