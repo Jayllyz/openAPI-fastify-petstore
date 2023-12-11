@@ -18,7 +18,5 @@ tasks:
       - npx prisma && npx prisma generate && npx prisma db push
       
   start:
-    preconditions:
-      - prisma
     cmds:
       - npm run dev
